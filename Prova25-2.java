@@ -1,0 +1,118 @@
+import java.util.Scanner;
+
+//Questão 1//
+
+public static double digitarValorValido() {
+    double valor = sc.nextDouble();
+    while (valor < 0) {
+        System.out.println("Valor negativo. Digite novamente: ");
+        valor = sc.nextDouble();
+    }
+    return valor;
+}
+
+public static int cadastrarConta(Conta[] v, int tam) {
+    if (tam >= TAM_CONTAS) {
+        System.out.println("Vetor cheio!");
+        return tam;
+    }
+    Conta c = new Conta();
+    System.out.println("Digite o id: ");
+    c.id = sc.nextInt();
+    while (buscaId(v, tam, c.id) != -1) {
+        System.out.println("Id já existe. Digite outro id: ");
+        c.id = sc.nextInt();
+    }
+    sc.nextLine();
+    System.out.println("Digite o nome do cliente: ");
+    c.cliente = sc.nextLine();
+    System.out.println("Digite o saldo: ");
+    c.saldo = digitarValorValido();
+    System.out.println("Digite o limite: ");
+    c.limite = digitarValorValido();
+    v[tam] = c;
+    return tam + 1;
+}
+
+
+//Questão 2//
+public static int buscaBinariaCliente(Conta[] v, int tam, String x) {
+    int inicio = 0;
+    int fim = tam - 1;
+    while (inicio <= fim) {
+        int meio = (inicio + fim) / 2;
+        int comparacao = v[meio].cliente.compareToIgnoreCase(x);
+        if (comparacao == 0) {
+            return meio;
+        } else if (comparacao < 0) {
+            ini = meio + 1;
+        } else {
+            fim = meio - 1;
+        }
+    }
+    return -1;
+}
+
+//Questao 3// 
+
+public static int insertionSortCliente(Conta[] v, int tam) {
+    for (int i = 1; i < tam; i += 1) {
+        Conta chave = v[i];
+        int j = i - 1;
+        while (j >= 0 && v[j].cliente.compareToIgnoreCase(chave.cliente) > 0) {
+            v[j + 1] = v[j];
+            j -= 1;
+        }
+        v[j + 1] = chave;
+    }
+    return tam;
+}
+
+//Questão 4//
+public static int filtraOperacoes(Operacao[] vOp, int tamOp, Operacao[] vOpFiltrado, int x) {
+    int tamFiltrado = 0;
+    for (int i = 0; i < tamOp; i += 1) {
+        if (vOp[i].idConta == x) {
+            vOpFiltrado[tamFiltrado] = vOp[i];
+            tamFiltrado += 1;
+        }
+    }
+    return tamFiltrado;
+}
+
+
+//Questão 5//
+
+public static String formataValor(double valor) {
+    if (valor < 0) {
+        return String.format("%.2f", -valor) + "D";
+    }
+    return String.format("%.2f", valor) + "C";
+}
+
+public static String nomeOperacao(char tipo) {
+    if (tipo == 'D') {
+        return "Depósito";
+    }
+    if (tipo == 'S') {
+        return "Saque";
+    }
+    return "Transferência";
+}
+
+public static double calculaSaldoAnterior(Operacao[] v, int inicio) {
+    double saldo = 0;
+    for (int i = 0; i < inicio; i += 1) {
+        saldo += v[i].valor;
+    }
+    return saldo;
+}
+
+public static double imprimeOperacoes(Operacao[] v, int inicio, int tam, double saldo) {
+    for (int i = inicio; i < tam; i += 1) {
+        saldo += v[i].valor;
+        System.out.println(v[i].id + " | " + nomeOperacao(v[i].tipo) + " | "
+            + formataValor(v[i].valor) + " | " + formataValor(saldo));
+    }
+    return saldo;
+}
